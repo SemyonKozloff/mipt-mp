@@ -4,24 +4,27 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#define ALIVE 1
+#define DEAD 0
+
+#define SWAP(x, y) do { typeof(x) SWAP = x; x = y; y = SWAP; } while (0)
+
 /*
- * Calculate new generation based on previous one.
- * Return TRUE if at least one cell was changed in new generation.
- */
 bool calc_new_generation(size_t x_grid_size, size_t y_grid_size,
                          char **curr_generation,
                          char **new_generation);
+                         */
 
-void start_gol(size_t x_grid_size, size_t y_grid_size,
-               size_t num_threads);
-
-void stop_gol(char **prev_generation,
-              char **curr_generation);
+void start_gol(size_t x_grid_size, size_t y_grid_size);
 
 void set_init_generation(size_t x_grid_size, size_t y_grid_size,
                          char **init_generation);
+void draw_grid(size_t x_grid_size, size_t y_grid_size,
+               char **generation);
 
+void copy_grid(size_t x_grid_size, size_t y_grid_size,
+               char **to, char **from);
 char **alloc_grid(size_t x_grid_size, size_t y_grid_size);
-void free_grid(char **grid);
+void free_grid(size_t x_grid_size, char **grid);
 
 #endif //MIPT_MP_OMP_GOL_H
