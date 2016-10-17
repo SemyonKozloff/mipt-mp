@@ -9,12 +9,6 @@
 
 #define SWAP(x, y) do { typeof(x) SWAP = x; x = y; y = SWAP; } while (0)
 
-/*
-bool calc_new_generation(size_t x_grid_size, size_t y_grid_size,
-                         char **curr_generation,
-                         char **new_generation);
-                         */
-
 void start_gol(size_t x_grid_size, size_t y_grid_size);
 
 void set_init_generation(size_t x_grid_size, size_t y_grid_size,
