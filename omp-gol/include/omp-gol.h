@@ -7,14 +7,14 @@
 #define ALIVE 1
 #define DEAD 0
 
-#define SWAP(x, y) do { typeof(x) SWAP = x; x = y; y = SWAP; } while (0)
+#define SWAP(x, y) do { typeof(x) SWAP = x; x = y; y = SWAP; } while (false)
 
-void start_gol(size_t x_grid_size, size_t y_grid_size);
+void launch_game(size_t x_grid_size, size_t y_grid_size);
 
 void set_init_generation(size_t x_grid_size, size_t y_grid_size,
                          char **init_generation);
-void draw_grid(size_t x_grid_size, size_t y_grid_size,
-               char **generation);
+void display_grid(size_t x_grid_size, size_t y_grid_size,
+                  char **generation);
 
 void copy_grid(size_t x_grid_size, size_t y_grid_size,
                char **to, char **from);

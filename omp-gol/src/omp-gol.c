@@ -4,7 +4,7 @@
 
 #include "omp-gol.h"
 
-void start_gol(size_t x_grid_size, size_t y_grid_size)
+void launch_game(size_t x_grid_size, size_t y_grid_size)
 {
     char **curr_generation = alloc_grid(x_grid_size, y_grid_size);
     char **new_generation = alloc_grid(x_grid_size, y_grid_size);
@@ -17,7 +17,7 @@ void start_gol(size_t x_grid_size, size_t y_grid_size)
         {
             #pragma omp master
             {
-                draw_grid(x_grid_size, y_grid_size, curr_generation);
+                display_grid(x_grid_size, y_grid_size, curr_generation);
             }
 
             is_changed = false;
@@ -39,6 +39,7 @@ void start_gol(size_t x_grid_size, size_t y_grid_size)
                     assert(0 <= num_alive && num_alive <= 8);
 
                     char prev_state = new_generation[i][j];
+                    // TODO check if need num_alive == 2
                     if (num_alive == 3)
                     {
                         new_generation[i][j] = ALIVE;
@@ -54,8 +55,10 @@ void start_gol(size_t x_grid_size, size_t y_grid_size)
                 }
             }
 
-            #pragma omp barrier
             SWAP(curr_generation, new_generation);
+
+            // implicitly flush
+            #pragma omp barrier
         }
     }
 
@@ -100,8 +103,8 @@ void set_init_generation(size_t x_grid_size, size_t y_grid_size,
 
 }
 
-void draw_grid(size_t x_grid_size, size_t y_grid_size,
-               char **generation)
+void display_grid(size_t x_grid_size, size_t y_grid_size,
+                  char **generation)
 {
 
 }
