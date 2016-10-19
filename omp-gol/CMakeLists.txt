@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(omp_gol)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -fopenmp")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -fopenmp")
 
 include_directories(include/)
 

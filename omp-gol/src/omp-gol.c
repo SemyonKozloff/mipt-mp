@@ -1,10 +1,12 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <assert.h>
 #include <memory.h>
 
 #include "omp-gol.h"
 
-void launch_game(size_t x_grid_size, size_t y_grid_size)
+void launch_game(size_t x_grid_size, size_t y_grid_size,
+                 size_t num_generations)
 {
     char **curr_generation = alloc_grid(x_grid_size, y_grid_size);
     char **new_generation = alloc_grid(x_grid_size, y_grid_size);
@@ -13,7 +15,9 @@ void launch_game(size_t x_grid_size, size_t y_grid_size)
 
     #pragma omp parallel shared(curr_generation, new_generation, is_changed)
     {
-        while (is_changed)
+        for (size_t generation_counter = 0;
+             generation_counter < num_generations;
+             ++generation_counter)
         {
             #pragma omp master
             {
@@ -38,9 +42,11 @@ void launch_game(size_t x_grid_size, size_t y_grid_size)
                                      + curr_generation[i + 1][j + 1];
                     assert(0 <= num_alive && num_alive <= 8);
 
-                    char prev_state = new_generation[i][j];
-                    // TODO check if need num_alive == 2
-                    if (num_alive == 3)
+                    if (num_alive == 2)
+                    {
+                        new_generation[i][j] = curr_generation[i][j];
+                    }
+                    else if (num_alive == 3)
                     {
                         new_generation[i][j] = ALIVE;
                     }
@@ -48,7 +54,7 @@ void launch_game(size_t x_grid_size, size_t y_grid_size)
                     {
                         new_generation[i][j] = DEAD;
                     }
-                    if (prev_state != new_generation[i][j])
+                    if (curr_generation[i][j] != new_generation[i][j])
                     {
                         is_changed = true;
                     }
@@ -97,16 +103,46 @@ void copy_grid(size_t x_grid_size, size_t y_grid_size,
     }
 }
 
+// далее идет дикий говнокод
+
 void set_init_generation(size_t x_grid_size, size_t y_grid_size,
                          char **init_generation)
 {
+    // just for test
+    FILE* input_file = fopen("/home/semyon/Projects/mipt-multiprocessing/omp-gol/test/input.txt", "r");
+    assert(input_file != NULL);
+    char n = '\0';
 
+    for (size_t i = 1; i < x_grid_size + 1; ++i)
+    {
+        fread(init_generation[i] + 1, sizeof(char),
+              y_grid_size, input_file);
+        fread(&n, sizeof(char), 1, input_file);
+    }
+
+    for (size_t i = 1; i < x_grid_size + 1; ++i)
+    {
+        for (size_t j = 1; j < y_grid_size + 1; ++j)
+        {
+            init_generation[i][j] -= '0';
+        }
+    }
+
+    fclose(input_file);
 }
 
-void display_grid(size_t x_grid_size, size_t y_grid_size,
-                  char **generation)
+void display_grid(size_t x_grid_size, size_t y_grid_size, char **generation)
 {
+    for (size_t i = 1; i < x_grid_size + 1; ++i)
+    {
+        for (size_t j = 1; j < y_grid_size + 1; ++j)
+        {
+            generation[i][j] == 1 ? printf("#") : printf("0");
+        }
+        printf("\n");
+    }
 
+    printf("\n\n");
 }
 
 
