@@ -13,20 +13,20 @@ void launch_game(size_t x_grid_size, size_t y_grid_size,
     set_init_generation(x_grid_size, y_grid_size, curr_generation);
     bool is_changed = true;
 
-    #pragma omp parallel shared(curr_generation, new_generation, is_changed)
+    //#pragma omp parallel shared(curr_generation, new_generation, is_changed)
     {
         for (size_t generation_counter = 0;
-             generation_counter < num_generations;
+             generation_counter < num_generations && is_changed;
              ++generation_counter)
         {
-            #pragma omp master
+            //#pragma omp master
             {
                 display_grid(x_grid_size, y_grid_size, curr_generation);
             }
 
             is_changed = false;
             // calculate new generation based on the previous one
-            #pragma omp for reduction(||: is_changed) schedule (dynamic) nowait
+            #pragma omp parallel for reduction(||: is_changed) schedule (dynamic, 2) shared(curr_generation, new_generation)
             for (size_t i = 1; i < x_grid_size + 1; ++i)
             {
                 // TODO mb try inner parallel for
@@ -54,7 +54,8 @@ void launch_game(size_t x_grid_size, size_t y_grid_size,
                     {
                         new_generation[i][j] = DEAD;
                     }
-                    if (curr_generation[i][j] != new_generation[i][j])
+
+                    if (new_generation[i][j] != curr_generation[i][j])
                     {
                         is_changed = true;
                     }
@@ -64,7 +65,7 @@ void launch_game(size_t x_grid_size, size_t y_grid_size,
             SWAP(curr_generation, new_generation);
 
             // implicitly flush
-            #pragma omp barrier
+            //#pragma omp barrier
         }
     }
 
