@@ -1,24 +1,37 @@
 #ifndef MIPT_MP_OMP_GOL_H
 #define MIPT_MP_OMP_GOL_H
 
-#include <stdbool.h>
-#include <stddef.h>
+#include <vector>
+#include <limits>
 
-#define ALIVE 1
-#define DEAD 0
+enum class state
+{
+    alive = 1,
+    dead = 0
+};
 
-#define SWAP(x, y) do { typeof(x) _t = x; x = y; y = _t; } while (false)
+class game_of_life
+{
+    using grid_t = std::vector<std::vector<state>>;
 
-void launch_game(size_t x_grid_size, size_t y_grid_size,
-                 size_t num_generations);
+public:
+    void game_of_life(std::size_t x_grid_size, std::size_t y_grid_size,
+                      const grid_t& init_generation = get_random_generation());
 
-void set_init_generation(size_t x_grid_size, size_t y_grid_size,
-                         char **init_generation);
-void display_grid(size_t x_grid_size, size_t y_grid_size, char **generation);
+    grid_t get_random_generation() const;
 
-void copy_grid(size_t x_grid_size, size_t y_grid_size,
-               char **to, char **from);
-char **alloc_grid(size_t x_grid_size, size_t y_grid_size);
-void free_grid(size_t x_grid_size, char **grid);
+    void launch(std::size_t num_generations = DEF_NUM_GENERATIONS_);
 
-#endif //MIPT_MP_OMP_GOL_H
+private:
+    grid_t current_generation_;
+    grid_t next_generation_;
+
+    std::size_t x_grid_size_;
+    std::size_t y_grid_size_;
+
+    std::size_t generation_counter_;
+
+    const DEF_NUM_GENERATIONS_ = std::numeric_limits<std::size_t>::max();
+};
+
+#endif
