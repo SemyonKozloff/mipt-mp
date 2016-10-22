@@ -4,34 +4,48 @@
 #include <vector>
 #include <limits>
 
-enum class state
-{
-    alive = 1,
-    dead = 0
-};
 
 class game_of_life
 {
-    using grid_t = std::vector<std::vector<state>>;
+    using state_t = char;
+    using row_t = std::vector<state_t>;
+    using grid_t = std::vector<row_t>;
 
 public:
-    void game_of_life(std::size_t x_grid_size, std::size_t y_grid_size,
-                      const grid_t& init_generation = get_random_generation());
-
-    grid_t get_random_generation() const;
+    game_of_life(const grid_t& init_generation);
 
     void launch(std::size_t num_generations = DEF_NUM_GENERATIONS_);
 
+    static grid_t get_random_generation(std::size_t x_grid_size,
+                                        std::size_t y_grid_size);
 private:
-    grid_t current_generation_;
-    grid_t next_generation_;
+    // return the number of alive neighbours
+    std::size_t get_num_live_(std::size_t x_coord, std::size_t y_coord) const;
+
+    std::size_t generation_counter_;
 
     std::size_t x_grid_size_;
     std::size_t y_grid_size_;
 
-    std::size_t generation_counter_;
+    grid_t current_generation_;
+    grid_t next_generation_;
 
-    const DEF_NUM_GENERATIONS_ = std::numeric_limits<std::size_t>::max();
+    static const state_t LIVE = 1;
+    static const state_t DEAD = 0;
+
+    static const std::size_t DEF_NUM_GENERATIONS_ =
+            std::numeric_limits<std::size_t>::max();
 };
+
+void display_grid(const auto &grid)
+{
+    for (auto&& row : grid) {
+        for (auto &&cell : row) {
+            std::cout << int(cell) << ' ';
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
 
 #endif
