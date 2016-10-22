@@ -44,9 +44,10 @@ void game_of_life::launch(std::size_t num_generations)
         // avoiding borders
         for (std::size_t i = 1; i < x_grid_size_ - 1; ++i)
         {
-            for (std::size_t j = 1; i < y_grid_size_ - 1; ++j)
+            for (std::size_t j = 1; j < y_grid_size_ - 1; ++j)
             {
                 std::size_t num_live = get_num_live_(i, j);
+
                 if (num_live == 2)
                 {
                     next_generation_[i][j] = current_generation_[i][j];
@@ -102,7 +103,6 @@ std::size_t game_of_life::get_num_live_(std::size_t x_coord, std::size_t y_coord
 
     if (num_live < 0 || num_live > 8)
     {
-        std::cout << int(num_live) << std::endl;
         throw std::logic_error("More than 8 neighbours");
     }
 
