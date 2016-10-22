@@ -3,8 +3,6 @@
 #include <stdexcept>
 #include <iostream>
 
-#include <omp.h>
-
 #include "omp-gol.h"
 
 const game_of_life::state_t game_of_life::DEAD;
@@ -38,10 +36,11 @@ void game_of_life::launch(std::size_t num_generations)
          step_counter < num_generations && is_changed;
          ++step_counter, ++generation_counter_)
     {
-        display_grid(current_generation_);
+        //display_grid(current_generation_);
 
         is_changed = false;
         // avoiding borders
+        #pragma omp parallel for schedule (dynamic) reduction(||: is_changed)
         for (std::size_t i = 1; i < x_grid_size_ - 1; ++i)
         {
             for (std::size_t j = 1; j < y_grid_size_ - 1; ++j)
@@ -72,13 +71,29 @@ void game_of_life::launch(std::size_t num_generations)
     }
 }
 
+game_of_life::grid_t game_of_life::get_current_generation() const
+{
+    auto current_generation = current_generation_;
+
+    //removing borders
+    current_generation.erase(std::begin(current_generation));
+    current_generation.pop_back();
+    for (auto&& row : current_generation)
+    {
+        row.erase(std::begin(row));
+        row.pop_back();
+    }
+
+    return current_generation;
+}
+
 game_of_life::grid_t game_of_life::get_random_generation(std::size_t x_grid_size,
                                                          std::size_t y_grid_size)
 {
     grid_t random_generation(x_grid_size, row_t(y_grid_size));
     std::random_device random_device;
     std::default_random_engine engine(random_device());
-    std::uniform_int_distribution<int> uniform_distribution(1, 10);
+    std::uniform_int_distribution<std::size_t> uniform_distribution(1, 10);
 
     for (std::size_t i = 0; i < x_grid_size; ++i)
     {
@@ -107,4 +122,9 @@ std::size_t game_of_life::get_num_live_(std::size_t x_coord, std::size_t y_coord
     }
 
     return static_cast<std::size_t>(num_live);
+}
+
+std::size_t game_of_life::get_num_generations() const noexcept
+{
+    return generation_counter_;
 }
