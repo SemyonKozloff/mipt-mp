@@ -5,8 +5,8 @@
 
 #include "omp-gol.h"
 
-const game_of_life::state_t game_of_life::DEAD;
-const game_of_life::state_t game_of_life::LIVE;
+const game_of_life::state_t game_of_life::DEAD_;
+const game_of_life::state_t game_of_life::LIVE_;
 
 game_of_life::game_of_life(const game_of_life::grid_t& init_generation)
         : generation_counter_(0),
@@ -18,14 +18,14 @@ game_of_life::game_of_life(const game_of_life::grid_t& init_generation)
     // adding borders
     for (auto&& row : current_generation_)
     {
-        row.insert(std::begin(row), DEAD);
-        row.push_back(DEAD);
+        row.insert(std::begin(row), DEAD_);
+        row.push_back(DEAD_);
     }
 
     // side borders
     current_generation_.insert(std::begin(current_generation_),
-                               row_t(y_grid_size_, DEAD));
-    current_generation_.push_back(row_t(y_grid_size_, DEAD));
+                               row_t(y_grid_size_, DEAD_));
+    current_generation_.push_back(row_t(y_grid_size_, DEAD_));
 }
 
 void game_of_life::launch(std::size_t num_generations)
@@ -53,11 +53,11 @@ void game_of_life::launch(std::size_t num_generations)
                 }
                 else if (num_live == 3)
                 {
-                    next_generation_[i][j] = LIVE;
+                    next_generation_[i][j] = LIVE_;
                 }
                 else if (num_live < 2 || num_live > 3)
                 {
-                    next_generation_[i][j] = DEAD;
+                    next_generation_[i][j] = DEAD_;
                 }
 
                 if (current_generation_[i][j] != next_generation_[i][j])
@@ -99,7 +99,7 @@ game_of_life::grid_t game_of_life::get_random_generation(std::size_t x_grid_size
     {
         for (std::size_t j = 0; j < y_grid_size; ++j)
         {
-            random_generation[i][j] = uniform_distribution(engine) % 3 ? DEAD : LIVE;
+            random_generation[i][j] = uniform_distribution(engine) % 3 ? DEAD_ : LIVE_;
         }
     }
     return random_generation;

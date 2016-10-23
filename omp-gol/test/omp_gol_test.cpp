@@ -81,5 +81,5 @@ TEST(omp_gol_test, test_performance)
 
     ASSERT_EQ(st_last_generation, mt_last_generation);
     EXPECT_LE(mt_time, st_time);
-    // std::cout << st_time << ' ' << mt_time << std::endl;
+    std::cout << st_time << ' ' << mt_time << std::endl;
 }

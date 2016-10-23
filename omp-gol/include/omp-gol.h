@@ -34,8 +34,8 @@ private:
     grid_t current_generation_;
     grid_t next_generation_;
 
-    static const state_t LIVE = 1;
-    static const state_t DEAD = 0;
+    static const state_t LIVE_ = 1;
+    static const state_t DEAD_ = 0;
 
     static const std::size_t DEF_NUM_GENERATIONS_ =
             std::numeric_limits<std::size_t>::max();
@@ -43,8 +43,10 @@ private:
 
 void display_grid(const auto &grid)
 {
-    for (auto&& row : grid) {
-        for (auto &&cell : row) {
+    for (auto&& row : grid)
+    {
+        for (auto&& cell : row)
+        {
             std::cout << std::size_t(cell) << ' ';
         }
         std::cout << std::endl;
