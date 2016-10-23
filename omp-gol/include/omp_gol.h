@@ -4,6 +4,7 @@
 #include <vector>
 #include <limits>
 #include <iostream>
+#include <gtest/gtest.h>
 
 class game_of_life
 {
@@ -41,6 +42,7 @@ private:
             std::numeric_limits<std::size_t>::max();
 };
 
+/*
 void display_grid(const auto &grid)
 {
     for (auto&& row : grid)
@@ -53,5 +55,6 @@ void display_grid(const auto &grid)
     }
     std::cout << std::endl;
 }
+ */
 
-#endif
+#endif//MIPT_MP_OMP_GOL_H

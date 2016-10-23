@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include <omp.h>
 
-#include "omp-gol.h"
+#include "omp_gol.h"
 
 TEST(omp_gol_test, test_correctness)
 {

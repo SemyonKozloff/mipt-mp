@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "omp-gol.h"
+#include "omp_gol.h"
 
 const game_of_life::state_t game_of_life::DEAD_;
 const game_of_life::state_t game_of_life::LIVE_;
@@ -75,7 +75,7 @@ game_of_life::grid_t game_of_life::get_current_generation() const
 {
     auto current_generation = current_generation_;
 
-    //removing borders
+    // removing borders
     current_generation.erase(std::begin(current_generation));
     current_generation.pop_back();
     for (auto&& row : current_generation)
