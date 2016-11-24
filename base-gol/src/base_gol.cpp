@@ -5,8 +5,6 @@
 
 #include "base_gol.h"
 
-#include <gtest/gtest.h>
-
 const game_of_life::state_t game_of_life::DEAD_;
 const game_of_life::state_t game_of_life::LIVE_;
 
