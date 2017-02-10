@@ -12,6 +12,7 @@ public:
     using row_t = std::vector<state_t>;
     using grid_t = std::vector<row_t>;
 
+    game_of_life() = default;
     explicit game_of_life(const grid_t& init_generation);
 
     virtual void launch(std::size_t num_generations = DEF_NUM_GENERATIONS_);
