@@ -4,7 +4,7 @@ set(PROJECT_NAME "mpi-gol" CXX)
 project(${PROJECT_NAME})
 
 set(CMAKE_CXX_COMPILER /usr/bin/mpicxx)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lboost_mpi -lboost_serialization -std=c++14 -Wall -g")
 
 
 # Setting up project options.
@@ -36,16 +36,15 @@ set(BOOST_USE_STATIC_LIBS ON)
 set(BOOST_USE_STATIC_RUNTIME OFF)
 set(BOOST_ALL_DYN_LINK OFF)
 
-find_package(Boost 1.63.0 REQUIRED COMPONENTS mpi)
+find_package(Boost 1.63.0 REQUIRED COMPONENTS mpi serialization)
 if(BOOST_FOUND)
     include_directories(SYSTEM ${BOOST_INCLUDEDIR})
     target_link_libraries(${PROJECT_NAME} ${BOOST_LIBRARIES})
 endif()
 
-
 # Setting up gtest options.
 #set(GTEST_ROOT /home/semyon/Apps/googletest)
 
 #include_directories(${GTEST_ROOT} ${GTEST_ROOT}/include)
-#target_link_libraries(${PROJECT_NAME} gtest gtest_main)
 #add_subdirectory(${GTEST_ROOT} gtest)
+#target_link_libraries(${PROJECT_NAME} gtest gtest_main)

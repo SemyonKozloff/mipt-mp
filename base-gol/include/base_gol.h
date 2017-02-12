@@ -27,12 +27,15 @@ protected:
     // return the number of alive neighbours
     virtual std::size_t get_num_live_(std::size_t x_coord, std::size_t y_coord) const;
 
+    grid_t add_borders_(const grid_t& new_generation) const;
+
     std::size_t generation_counter_;
+
+    grid_t current_generation_;
 
     std::size_t x_grid_size_;
     std::size_t y_grid_size_;
 
-    grid_t current_generation_;
     grid_t next_generation_;
 
     static const state_t LIVE_ = 1;

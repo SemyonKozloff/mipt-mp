@@ -10,23 +10,11 @@ const game_of_life::state_t game_of_life::LIVE_;
 
 game_of_life::game_of_life(const game_of_life::grid_t& init_generation)
         : generation_counter_(0),
-          x_grid_size_(init_generation.size() + 2),
-          y_grid_size_(init_generation[0].size() + 2),
-          current_generation_(init_generation),
+          current_generation_(add_borders_(init_generation)),
+          x_grid_size_(current_generation_.size()),
+          y_grid_size_(current_generation_[0].size()),
           next_generation_(grid_t(x_grid_size_, row_t(y_grid_size_)))
-{
-    // adding borders
-    for (auto&& row : current_generation_)
-    {
-        row.insert(std::begin(row), DEAD_);
-        row.push_back(DEAD_);
-    }
-
-    // side borders
-    current_generation_.insert(std::begin(current_generation_),
-                               row_t(y_grid_size_, DEAD_));
-    current_generation_.push_back(row_t(y_grid_size_, DEAD_));
-}
+{ }
 
 void game_of_life::launch(std::size_t num_generations)
 {
@@ -129,4 +117,21 @@ std::size_t game_of_life::get_num_live_(std::size_t x_coord, std::size_t y_coord
 std::size_t game_of_life::get_num_generations() const noexcept
 {
     return generation_counter_;
+}
+
+game_of_life::grid_t game_of_life::add_borders_(const game_of_life::grid_t& generation) const
+{
+    grid_t new_generation = generation;
+    for (auto&& row : new_generation)
+    {
+        row.insert(std::begin(row), DEAD_);
+        row.push_back(DEAD_);
+    }
+
+    // side borders
+    new_generation.insert(std::begin(new_generation),
+                      row_t(y_grid_size_, DEAD_));
+    new_generation.push_back(row_t(y_grid_size_, DEAD_));
+
+    return new_generation;
 }
