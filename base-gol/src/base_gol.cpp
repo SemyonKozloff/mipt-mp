@@ -130,8 +130,8 @@ game_of_life::grid_t game_of_life::add_borders_(const game_of_life::grid_t& gene
 
     // side borders
     new_generation.insert(std::begin(new_generation),
-                      row_t(y_grid_size_, DEAD_));
-    new_generation.push_back(row_t(y_grid_size_, DEAD_));
+                          row_t(generation[0].size() + 2, DEAD_));
+    new_generation.push_back(row_t(generation[0].size() + 2, DEAD_));
 
     return new_generation;
 }

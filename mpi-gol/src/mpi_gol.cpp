@@ -35,8 +35,6 @@ void mpi_game_of_life::launch(std::size_t num_generations)
     game_of_life::launch(num_generations);
 
     current_generation_ = gather_grid_(current_generation_);
-
-
 }
 
 game_of_life::grid_t mpi_game_of_life::scatter_grid_(const game_of_life::grid_t& grid)
@@ -84,8 +82,9 @@ game_of_life::grid_t mpi_game_of_life::gather_grid_(const game_of_life::grid_t& 
         grid_t new_grid;
         for (const auto& grid : grid_pack)
         {
-
+            new_grid.insert(std::end(new_grid), std::cbegin(grid), std::cend(grid) - 1);
         }
+        new_grid.emplace_back(new_grid.front().size());
 
         return new_grid;
     }

@@ -8,14 +8,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lboost_mpi -lboost_serialization -std=c
 
 
 # Setting up project options.
-set(PROJECT_ROOT /home/semyon/Projects/mipt-multiprocessing/mpi-gol)
+set(PROJECT_ROOT /home/semyon/Projects/mipt-mp/mpi-gol)
 set(PROJECT_SOURCE_DECLARATION_DIRECTORY ${PROJECT_ROOT}/include)
 set(PROJECT_SOURCE_DEFINITION_DIRECTORY ${PROJECT_ROOT}/src)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT}/bin)
 
 include_directories(${PROJECT_SOURCE_DECLARATION_DIRECTORY})
 
-set(BASE_GOL_ROOT /home/semyon/Projects/mipt-multiprocessing/base-gol)
+set(BASE_GOL_ROOT /home/semyon/Projects/mipt-mp/base-gol)
 include_directories(${BASE_GOL_ROOT}/include)
 
 set(SOURCE_FILES src/main.cpp

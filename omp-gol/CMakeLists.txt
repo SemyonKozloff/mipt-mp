@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fopenmp -Wall -g")
 
 include_directories(include)
 
-set(BASE_GOL_ROOT /home/semyon/Projects/mipt-multiprocessing/base-gol)
+set(BASE_GOL_ROOT /home/semyon/Projects/mipt-mp/base-gol)
 include_directories(${BASE_GOL_ROOT}/include)
 
 set(SOURCE_FILES src/main.cpp
