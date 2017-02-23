@@ -13,7 +13,7 @@ mpi_game_of_life::mpi_game_of_life(const game_of_life::grid_t& init_generation)
 
     current_generation_ = add_borders_(scatter_grid_(init_generation));
     x_grid_size_ = current_generation_.size();
-    y_grid_size_ = current_generation_[0].size();
+    y_grid_size_ = current_generation_.front().size();
 
     next_generation_ = std::move(grid_t(x_grid_size_, row_t(y_grid_size_)));
 }
@@ -25,21 +25,32 @@ void mpi_game_of_life::launch(std::size_t num_generations)
 
     if (proc_rank_ != MASTER_PROC_RANK_)
     {
-        world_.send(left_neighbour_(), proc_rank_, current_generation_.front());
-        world_.recv(right_neighbour_(), right_neighbour_(), current_generation_.front());
+        for (std::size_t step_counter = 0; step_counter < num_generations; ++step_counter)
+        {
+            world_.send(left_neighbour_(), proc_rank_, current_generation_.front());
+            world_.send(right_neighbour_(), proc_rank_, current_generation_.back());
 
-        world_.send(right_neighbour_(), proc_rank_, current_generation_.back());
-        world_.recv(left_neighbour_(), left_neighbour_(), current_generation_.back());
+            row_t left_border, right_border;
+            world_.recv(left_neighbour_(), left_neighbour_(), left_border);
+            world_.recv(right_neighbour_(), right_neighbour_(), right_border);
+
+            current_generation_.front() = std::move(left_border);
+            current_generation_.back() = std::move(right_border);
+
+            game_of_life::launch(1);
+        }
+    }
+    else
+    {
+        ++generation_counter_;
     }
 
-    game_of_life::launch(num_generations);
 
-    current_generation_ = gather_grid_(current_generation_);
 }
 
 game_of_life::grid_t mpi_game_of_life::scatter_grid_(const game_of_life::grid_t& grid)
 {
-    // packing to scatter among processes using mpi_scatter
+    // packing for scattering among processes using mpi_scatter
     std::vector<grid_t> grid_pack;
     if (proc_rank_ == MASTER_PROC_RANK_)
     {
@@ -64,12 +75,12 @@ game_of_life::grid_t mpi_game_of_life::scatter_grid_(const game_of_life::grid_t&
 
 int mpi_game_of_life::left_neighbour_() const noexcept
 {
-    return 0;
+    return proc_rank_ == 1 ? world_.size() - 1 : proc_rank_ - 1;
 }
 
 int mpi_game_of_life::right_neighbour_() const noexcept
 {
-    return 0;
+    return proc_rank_ == world_.size() - 1 ? 1 : proc_rank_ + 1;
 }
 
 game_of_life::grid_t mpi_game_of_life::gather_grid_(const game_of_life::grid_t& local_grid) const
@@ -79,14 +90,14 @@ game_of_life::grid_t mpi_game_of_life::gather_grid_(const game_of_life::grid_t& 
         std::vector<grid_t> grid_pack;
         mpi::gather(world_, local_grid, grid_pack, MASTER_PROC_RANK_);
 
-        grid_t new_grid;
+        grid_t gathered_grid;
         for (const auto& grid : grid_pack)
         {
-            new_grid.insert(std::end(new_grid), std::cbegin(grid), std::cend(grid) - 1);
+            gathered_grid.insert(std::end(gathered_grid), std::cbegin(grid), std::cend(grid) - 1);
         }
-        new_grid.emplace_back(new_grid.front().size());
+        gathered_grid.emplace_back(gathered_grid.front().size());
 
-        return new_grid;
+        return gathered_grid;
     }
     else
     {

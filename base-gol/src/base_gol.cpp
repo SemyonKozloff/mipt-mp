@@ -12,7 +12,7 @@ game_of_life::game_of_life(const game_of_life::grid_t& init_generation)
         : generation_counter_(0),
           current_generation_(add_borders_(init_generation)),
           x_grid_size_(current_generation_.size()),
-          y_grid_size_(current_generation_[0].size()),
+          y_grid_size_(current_generation_.front().size()),
           next_generation_(grid_t(x_grid_size_, row_t(y_grid_size_)))
 { }
 
@@ -130,8 +130,8 @@ game_of_life::grid_t game_of_life::add_borders_(const game_of_life::grid_t& gene
 
     // side borders
     new_generation.insert(std::begin(new_generation),
-                          row_t(generation[0].size() + 2, DEAD_));
-    new_generation.push_back(row_t(generation[0].size() + 2, DEAD_));
+                          row_t(generation.front().size() + 2, DEAD_));
+    new_generation.push_back(row_t(generation.front().size() + 2, DEAD_));
 
     return new_generation;
 }
