@@ -27,6 +27,8 @@ public:
 
     void launch(std::size_t num_generations = DEF_NUM_GENERATIONS_) override;
 
+    grid_t get_current_generation() override;
+
 private:
     grid_t scatter_grid_(const grid_t& grid);
     grid_t gather_grid_(const grid_t& local_grid) const;
@@ -34,7 +36,7 @@ private:
     int left_neighbour_() const noexcept;
     int right_neighbour_() const noexcept;
 
-    mpi::communicator world_;
+    mutable mpi::communicator world_;
     int proc_rank_;
     int num_processes_;
 

@@ -17,7 +17,7 @@ public:
 
     virtual void launch(std::size_t num_generations = DEF_NUM_GENERATIONS_);
 
-    virtual grid_t get_current_generation() const;
+    virtual grid_t get_current_generation();
     virtual std::size_t get_num_generations() const noexcept;
 
     static grid_t get_random_generation(std::size_t x_grid_size,

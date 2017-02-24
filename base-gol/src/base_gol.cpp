@@ -61,7 +61,7 @@ void game_of_life::launch(std::size_t num_generations)
     }
 }
 
-game_of_life::grid_t game_of_life::get_current_generation() const
+game_of_life::grid_t game_of_life::get_current_generation()
 {
     auto current_generation = current_generation_;
 
