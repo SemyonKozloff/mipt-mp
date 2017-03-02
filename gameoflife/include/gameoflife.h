@@ -5,15 +5,15 @@
 #include <limits>
 #include <iostream>
 
-class game_of_life
+class gameoflife
 {
 public:
     using state_t = char;
     using row_t = std::vector<state_t>;
     using grid_t = std::vector<row_t>;
 
-    game_of_life() = default;
-    explicit game_of_life(const grid_t& init_generation);
+    gameoflife() = default;
+    explicit gameoflife(const grid_t& init_generation);
 
     virtual void launch(std::size_t num_generations = DEF_NUM_GENERATIONS_);
 
@@ -25,9 +25,9 @@ public:
 
 protected:
     // return the number of alive neighbours
-    virtual std::size_t get_num_live_(std::size_t x_coord, std::size_t y_coord) const;
-
-    grid_t add_borders_(const grid_t& new_generation) const;
+    std::size_t get_num_live_(std::size_t x, std::size_t y) const;
+    grid_t add_borders_(const grid_t& grid);
+    grid_t remove_borders_(const grid_t& grid);
 
     std::size_t generation_counter_;
 

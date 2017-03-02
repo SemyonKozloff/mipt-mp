@@ -1,4 +1,6 @@
-#include <iostream>
+#ifndef MIPT_MP_UTILS_H
+#define MIPT_MP_UTILS_H
+
 
 void display_grid(const auto& grid)
 {
@@ -12,3 +14,5 @@ void display_grid(const auto& grid)
     }
     std::cout << std::endl;
 }
+
+#endif //MIPT_MP_UTILS_H

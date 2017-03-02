@@ -5,12 +5,12 @@
 #include <limits>
 #include <iostream>
 
-#include "base_gol.h"
+#include "gameoflife.h"
 
-class omp_game_of_life : public game_of_life
+class omp_gameoflife : public gameoflife
 {
 public:
-    explicit omp_game_of_life(const grid_t& init_generation);
+    explicit omp_gameoflife(const grid_t& init_generation);
 
     void launch(std::size_t num_generations = DEF_NUM_GENERATIONS_) override;
 };

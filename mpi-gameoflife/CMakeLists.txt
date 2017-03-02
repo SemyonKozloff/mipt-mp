@@ -1,27 +1,28 @@
 cmake_minimum_required(VERSION 3.6)
 
-set(PROJECT_NAME "mpi-gol" CXX)
+set(PROJECT_NAME "mpi-gameoflife" CXX)
 project(${PROJECT_NAME})
 
 set(CMAKE_CXX_COMPILER /usr/bin/mpicxx)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lboost_mpi -lboost_serialization -std=c++14 -Wall -g")
+#set(BOOST_LIB_PARAMS )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lboost_mpi -lboost_serialization -lboost_graph -std=c++14 -Wall -g")
 
 
 # Setting up project options.
-set(PROJECT_ROOT /home/semyon/Projects/mipt-mp/mpi-gol)
+set(PROJECT_ROOT /home/semyon/Projects/mipt-mp/mpi-gameoflife)
 set(PROJECT_SOURCE_DECLARATION_DIRECTORY ${PROJECT_ROOT}/include)
 set(PROJECT_SOURCE_DEFINITION_DIRECTORY ${PROJECT_ROOT}/src)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT}/bin)
 
 include_directories(${PROJECT_SOURCE_DECLARATION_DIRECTORY})
 
-set(BASE_GOL_ROOT /home/semyon/Projects/mipt-mp/base-gol)
+set(BASE_GOL_ROOT /home/semyon/Projects/mipt-mp/gameoflife)
 include_directories(${BASE_GOL_ROOT}/include)
 
 set(SOURCE_FILES src/main.cpp
-        include/mpi_gol.h
-        src/mpi_gol.cpp
-        ${BASE_GOL_ROOT}/src/base_gol.cpp)
+        include/mpi_gameoflife.h
+        src/mpi_gameoflife.cpp
+        ${BASE_GOL_ROOT}/src/gameoflife.cpp)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 
@@ -36,7 +37,7 @@ set(BOOST_USE_STATIC_LIBS ON)
 set(BOOST_USE_STATIC_RUNTIME OFF)
 set(BOOST_ALL_DYN_LINK OFF)
 
-find_package(Boost 1.63.0 REQUIRED COMPONENTS mpi serialization)
+find_package(Boost 1.63.0 REQUIRED COMPONENTS mpi serialization graph)
 if(BOOST_FOUND)
     include_directories(SYSTEM ${BOOST_INCLUDEDIR})
     target_link_libraries(${PROJECT_NAME} ${BOOST_LIBRARIES})

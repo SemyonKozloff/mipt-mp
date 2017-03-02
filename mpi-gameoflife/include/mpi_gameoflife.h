@@ -3,7 +3,7 @@
 
 #include <boost/mpi.hpp>
 
-#include "base_gol.h"
+#include "gameoflife.h"
 
 namespace mpi = boost::mpi;
 
@@ -20,10 +20,10 @@ void display_grid(const auto& grid)
     std::cout << std::endl << std::endl;
 }
 
-class mpi_game_of_life final : public game_of_life
+class mpi_gameoflife final : public gameoflife
 {
 public:
-    mpi_game_of_life(const grid_t& init_generation);
+    mpi_gameoflife(const grid_t& init_generation);
 
     void launch(std::size_t num_generations = DEF_NUM_GENERATIONS_) override;
 
