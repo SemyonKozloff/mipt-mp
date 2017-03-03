@@ -23,64 +23,53 @@ void mpi_gameoflife::launch(std::size_t num_generations)
 {
     mpi::broadcast(world_, num_generations, MASTER_PROC_RANK_);
 
-    if (proc_rank_ != MASTER_PROC_RANK_)
+    for (std::size_t step_counter = 0; step_counter < num_generations; ++step_counter)
     {
-        for (std::size_t step_counter = 0; step_counter < num_generations; ++step_counter)
+        // TODO Make separated function for one step
+        if (proc_rank_ == 0)
         {
-            //std::array<mpi::request, 4> requests;
+            world_.send(right_neighbour_(), proc_rank_, *(std::end(current_generation_) - 2));
+            world_.recv(right_neighbour_(), right_neighbour_(), current_generation_.back());
+        }
+        else if (proc_rank_ == num_processes_ - 1)
+        {
+            world_.send(left_neighbour_(), proc_rank_, *(std::begin(current_generation_) + 1));
+            world_.recv(left_neighbour_(), left_neighbour_(), current_generation_.front());
+        }
+        else
+        {
+            world_.send(left_neighbour_(), proc_rank_, *(std::begin(current_generation_) + 1));
+            world_.send(right_neighbour_(), proc_rank_, *(std::end(current_generation_) - 2));
 
-            //std::cout << step_counter << ":" << proc_rank_ << std::endl;
-            //display_grid(current_generation_);
-            //std::cout.flush();
+            world_.recv(left_neighbour_(), left_neighbour_(), current_generation_.front());
+            world_.recv(right_neighbour_(), right_neighbour_(), current_generation_.back());
+        }
 
-            if (proc_rank_ == 1)
+        for (std::size_t x = 1; x < x_grid_size_ - 1; ++x)
+        {
+            for (std::size_t y = 1; y < y_grid_size_ - 1; ++y)
             {
-                world_.send(right_neighbour_(), proc_rank_, *(std::end(current_generation_) - 2));
-                world_.recv(right_neighbour_(), right_neighbour_(), current_generation_.back());
-            }
-            else if (proc_rank_ == num_processes_ - 1)
-            {
-                world_.send(left_neighbour_(), proc_rank_, *(std::begin(current_generation_) + 1));
-                world_.recv(left_neighbour_(), left_neighbour_(), current_generation_.front());
-            }
-            else
-            {
-                world_.send(left_neighbour_(), proc_rank_, *(std::begin(current_generation_) + 1));
-                world_.send(right_neighbour_(), proc_rank_, *(std::end(current_generation_) - 2));
+                std::size_t num_live = get_num_live_(x, y);
 
-                world_.recv(left_neighbour_(), left_neighbour_(), current_generation_.front());
-                world_.recv(right_neighbour_(), right_neighbour_(), current_generation_.back());
-            }
-
-            for (std::size_t i = 1; i < x_grid_size_ - 1; ++i)
-            {
-                for (std::size_t j = 1; j < y_grid_size_ - 1; ++j)
+                if (num_live == 2)
                 {
-                    std::size_t num_live = get_num_live_(i, j);
-
-                    if (num_live == 2)
-                    {
-                        next_generation_[i][j] = current_generation_[i][j];
-                    }
-                    else if (num_live == 3)
-                    {
-                        next_generation_[i][j] = LIVE_;
-                    }
-                    else if (num_live < 2 || num_live > 3)
-                    {
-                        next_generation_[i][j] = DEAD_;
-                    }
+                    next_generation_[x][y] = current_generation_[x][y];
+                }
+                else if (num_live == 3)
+                {
+                    next_generation_[x][y] = LIVE_;
+                }
+                else if (num_live < 2 || num_live > 3)
+                {
+                    next_generation_[x][y] = DEAD_;
                 }
             }
-
-            std::swap(current_generation_, next_generation_);
         }
+
+        std::swap(current_generation_, next_generation_);
     }
-    else
-    {
-        // visualisation code
-        ++generation_counter_;
-    }
+
+    ++generation_counter_;
 }
 
 gameoflife::grid_t mpi_gameoflife::scatter_grid_(const gameoflife::grid_t& grid)
@@ -88,39 +77,36 @@ gameoflife::grid_t mpi_gameoflife::scatter_grid_(const gameoflife::grid_t& grid)
     // packing for scattering among processes using mpi_scatter
     std::vector<grid_t> grid_chunks;
 
-    if (proc_rank_ == MASTER_PROC_RANK_)
-    {
-        std::size_t chunk_size = grid.size() / (num_processes_ - 1);
-        std::size_t remainder_size = grid.size() % (num_processes_ - 1);
+    std::size_t chunk_size = grid.size() / num_processes_;
+    std::size_t remainder_size = grid.size() % num_processes_;
 
-        grid_chunks.emplace_back(); // empty chunk for master process
-        for (auto left_it = std::begin(grid), right_it = left_it;
-             left_it < std::end(grid);
-             left_it = right_it)
+    for (auto left_it = std::begin(grid), right_it = left_it;
+         left_it < std::end(grid);
+         left_it = right_it)
+    {
+        right_it = left_it + chunk_size + (remainder_size > 0 ? 1 : 0);
+        if (remainder_size > 0)
         {
-            right_it = left_it + chunk_size + (remainder_size > 0 ? 1 : 0);
-            if (remainder_size > 0)
-            {
-                --remainder_size;
-            }
-            grid_chunks.emplace_back(left_it, right_it);
+            --remainder_size;
         }
+        grid_chunks.emplace_back(left_it, right_it);
     }
+
 
     grid_t portion;
     mpi::scatter(world_, grid_chunks, portion, MASTER_PROC_RANK_);
 
-    return proc_rank_ == MASTER_PROC_RANK_ ? grid : portion;
+    return portion;
 }
 
 int mpi_gameoflife::left_neighbour_() const noexcept
 {
-    return proc_rank_ == 1 ? num_processes_ - 1 : proc_rank_ - 1;
+    return proc_rank_ == 0 ? num_processes_ - 1 : proc_rank_ - 1;
 }
 
 int mpi_gameoflife::right_neighbour_() const noexcept
 {
-    return proc_rank_ == num_processes_ - 1 ? 1 : proc_rank_ + 1;
+    return proc_rank_ == num_processes_ - 1 ? 0 : proc_rank_ + 1;
 }
 
 gameoflife::grid_t mpi_gameoflife::gather_grid_(const gameoflife::grid_t& local_grid) const
@@ -131,9 +117,9 @@ gameoflife::grid_t mpi_gameoflife::gather_grid_(const gameoflife::grid_t& local_
     if (proc_rank_ == MASTER_PROC_RANK_)
     {
         grid_t gathered_grid;
-        for (auto it = std::begin(grid_chunks) + 1; it != std::end(grid_chunks); ++it)
+        for (auto&& grid : grid_chunks)
         {
-            gathered_grid.insert(std::end(gathered_grid), std::cbegin(*it), std::cend(*it));
+            gathered_grid.insert(std::end(gathered_grid), std::cbegin(grid), std::cend(grid));
         }
 
         return gathered_grid;
@@ -146,7 +132,6 @@ gameoflife::grid_t mpi_gameoflife::gather_grid_(const gameoflife::grid_t& local_
 
 gameoflife::grid_t mpi_gameoflife::get_current_generation()
 {
-    world_.barrier();
     auto gathered_curr_gen = gather_grid_(remove_borders_(current_generation_));
 
     mpi::broadcast(world_, gathered_curr_gen, MASTER_PROC_RANK_);
