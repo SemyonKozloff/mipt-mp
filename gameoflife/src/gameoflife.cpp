@@ -26,35 +26,7 @@ void gameoflife::launch(std::size_t num_generations)
          step_counter < num_generations && is_changed;
          ++step_counter, ++generation_counter_)
     {
-        is_changed = false;
-        // avoiding borders
-        for (std::size_t x = 1; x < x_grid_size_ - 1; ++x)
-        {
-            for (std::size_t y = 1; y < y_grid_size_ - 1; ++y)
-            {
-                std::size_t num_live = get_num_live_(x, y);
-
-                if (num_live == 2)
-                {
-                    next_generation_[x][y] = current_generation_[x][y];
-                }
-                else if (num_live == 3)
-                {
-                    next_generation_[x][y] = LIVE_;
-                }
-                else if (num_live < 2 || num_live > 3)
-                {
-                    next_generation_[x][y] = DEAD_;
-                }
-
-                if (current_generation_[x][y] != next_generation_[x][y])
-                {
-                    is_changed = true;
-                }
-            }
-        }
-
-        std::swap(current_generation_, next_generation_);
+        is_changed = step_();
     }
 }
 
@@ -135,4 +107,38 @@ gameoflife::grid_t gameoflife::remove_borders_(const gameoflife::grid_t& grid)
     }
 
     return temp_grid;
+}
+
+bool gameoflife::step_()
+{
+    bool is_changed = false;
+
+    for (std::size_t x = 1; x < x_grid_size_ - 1; ++x) // avoiding borders
+    {
+        for (std::size_t y = 1; y < y_grid_size_ - 1; ++y)
+        {
+            std::size_t num_live = get_num_live_(x, y);
+
+            if (num_live == 2)
+            {
+                next_generation_[x][y] = current_generation_[x][y];
+            }
+            else if (num_live == 3)
+            {
+                next_generation_[x][y] = LIVE_;
+            }
+            else if (num_live < 2 || num_live > 3)
+            {
+                next_generation_[x][y] = DEAD_;
+            }
+
+            if (current_generation_[x][y] != next_generation_[x][y])
+            {
+                is_changed = true;
+            }
+        }
+    }
+
+    std::swap(current_generation_, next_generation_);
+    return is_changed;
 }

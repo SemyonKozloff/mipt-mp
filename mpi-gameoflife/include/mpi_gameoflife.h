@@ -17,11 +17,13 @@ public:
     grid_t get_current_generation() override;
 
 private:
-    grid_t scatter_grid_(const grid_t& grid);
+    grid_t scatter_grid_(const grid_t& grid) const;
     grid_t gather_grid_(const grid_t& local_grid) const;
 
     int left_neighbour_() const noexcept;
     int right_neighbour_() const noexcept;
+
+    void exchange_borders_();
 
     mutable mpi::communicator world_;
     int proc_rank_;

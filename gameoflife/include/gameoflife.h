@@ -29,6 +29,8 @@ protected:
     grid_t add_borders_(const grid_t& grid);
     grid_t remove_borders_(const grid_t& grid);
 
+    bool step_();
+
     std::size_t generation_counter_;
 
     grid_t current_generation_;

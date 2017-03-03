@@ -1,7 +1,4 @@
 #include <boost/mpi.hpp>
-#include <boost/serialization/vector.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/graphviz.hpp>
 
 #include "mpi_gameoflife.h"
 
@@ -26,7 +23,7 @@ int main()
              {0, 0, 0, 0, 1, 1}};
 
     mpi_gameoflife game(input);
-    game.launch(20);
+    game.launch();
     auto result = game.get_current_generation();
 
     assert(expected == game.get_current_generation());
