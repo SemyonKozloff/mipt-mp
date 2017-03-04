@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(PROJECT_NAME mipt-mp)
+set(PROJECT_NAME "mipt-mp" CXX)
 project(${PROJECT_NAME})
+
+set(CMAKE_CXX_STANDARD 14)
 
 # Setting up gtest options
 set(GTEST_ROOT /home/semyon/Apps/googletest)
@@ -20,11 +22,11 @@ set(BOOST_USE_STATIC_RUNTIME OFF)
 set(BOOST_ALL_DYN_LINK OFF)
 
 # Setting up project options
-set(PROJECT_ROOT /home/semyon/Projects/mipt-mp/)
+set(PROJECT_ROOT /home/semyon/Projects/mipt-mp)
 set(BASE_GOL_ROOT ${PROJECT_ROOT}/gameoflife)
 set(MPI_GOL_ROOT ${PROJECT_ROOT}/mpi-gameoflife)
 include_directories(${BASE_GOL_ROOT}/include)
 
-add_subdirectory(gameoflife/)
-add_subdirectory(mpi-gameoflife/)
-add_subdirectory(omp-gameoflife/)
+add_subdirectory(gameoflife)
+add_subdirectory(mpi-gameoflife)
+add_subdirectory(omp-gameoflife)

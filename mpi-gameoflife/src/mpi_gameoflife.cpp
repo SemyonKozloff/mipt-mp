@@ -8,7 +8,7 @@ mpi_gameoflife::mpi_gameoflife(const gameoflife::grid_t& init_generation)
           proc_rank_(world_.rank()),
           num_processes_(world_.size())
 {
-    if (num_processes_ < 3) {
+    if (num_processes_ < 2) {
         throw std::invalid_argument("Too few processes");
     }
 

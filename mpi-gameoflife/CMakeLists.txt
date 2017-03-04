@@ -3,7 +3,7 @@ project(${MODULE_NAME})
 
 set(CMAKE_CXX_COMPILER /usr/bin/mpicxx)
 set(LBOOST_PARAMS "-lboost_mpi -lboost_serialization")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LBOOST_PARAMS} -std=c++14 -Wall -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LBOOST_PARAMS} -Wall -g")
 
 # Setting up project options
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${MPI_GOL_ROOT}/bin)

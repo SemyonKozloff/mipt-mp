@@ -63,12 +63,11 @@ TEST(omp_gameoflife_test, performance)
     const std::size_t num_steps = 100;
     const std::size_t num_threads = 4;
 
-    auto random_generation = omp_gameoflife::get_random_generation(x_size, y_size);
+    auto random_generation = gameoflife::get_random_generation(x_size, y_size);
 
     // single-thread test
-    omp_gameoflife single_thread_game(random_generation);
+    gameoflife single_thread_game(random_generation);
 
-    omp_set_num_threads(1);
     double start_time = omp_get_wtime();
     single_thread_game.launch(num_steps);
     double finish_time = omp_get_wtime();
