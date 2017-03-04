@@ -20,27 +20,21 @@ void omp_gameoflife::launch(std::size_t num_generations)
         is_changed = false;
 
         #pragma omp parallel for schedule (dynamic) reduction(||: is_changed)
-        for (std::size_t x = 1; x < x_grid_size_ - 1; ++x)
-        {
-            for (std::size_t y = 1; y < y_grid_size_ - 1; ++y)
-            {
+        for (std::size_t x = 1; x < x_grid_size_ - 1; ++x) {
+            for (std::size_t y = 1; y < y_grid_size_ - 1; ++y) {
                 std::size_t num_live = get_num_live_(x, y);
 
-                if (num_live == 2)
-                {
+                if (num_live == 2) {
                     next_generation_[x][y] = current_generation_[x][y];
                 }
-                else if (num_live == 3)
-                {
+                else if (num_live == 3) {
                     next_generation_[x][y] = LIVE_;
                 }
-                else if (num_live < 2 || num_live > 3)
-                {
+                else if (num_live < 2 || num_live > 3) {
                     next_generation_[x][y] = DEAD_;
                 }
 
-                if (current_generation_[x][y] != next_generation_[x][y])
-                {
+                if (current_generation_[x][y] != next_generation_[x][y]) {
                     is_changed = true;
                 }
             }

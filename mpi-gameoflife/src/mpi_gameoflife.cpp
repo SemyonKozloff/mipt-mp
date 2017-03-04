@@ -107,7 +107,7 @@ gameoflife::grid_t mpi_gameoflife::get_current_generation()
 void mpi_gameoflife::exchange_borders_()
 {
     if (proc_rank_ == 0) {
-        world_.send(right_neighbour_(), proc_rank_, *(std::end(current_generation_) - 2));
+        world_.send(right_neighbour_(), proc_rank_, *(std::rbegin(current_generation_) + 1));
         world_.recv(right_neighbour_(), right_neighbour_(), current_generation_.back());
     }
     else if (proc_rank_ == num_processes_ - 1) {
@@ -116,7 +116,7 @@ void mpi_gameoflife::exchange_borders_()
     }
     else {
         world_.send(left_neighbour_(), proc_rank_, *(std::begin(current_generation_) + 1));
-        world_.send(right_neighbour_(), proc_rank_, *(std::end(current_generation_) - 2));
+        world_.send(right_neighbour_(), proc_rank_, *(std::rbegin(current_generation_) + 1));
 
         world_.recv(left_neighbour_(), left_neighbour_(), current_generation_.front());
         world_.recv(right_neighbour_(), right_neighbour_(), current_generation_.back());
