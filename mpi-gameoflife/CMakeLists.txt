@@ -10,8 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${MPI_GOL_ROOT}/bin)
 
 include_directories(${MPI_GOL_ROOT}/include)
 set(SOURCE_FILES src/main.cpp
-        include/mpi_gameoflife.h
-        src/mpi_gameoflife.cpp
+        include/mpi_gameoflife.h src/mpi_gameoflife.cpp
         ${BASE_GOL_ROOT}/src/gameoflife.cpp)
 add_executable(${MODULE_NAME} ${SOURCE_FILES})
 

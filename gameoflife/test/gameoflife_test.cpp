@@ -3,7 +3,6 @@
 #include <gtest/gtest.h>
 
 #include "gameoflife.h"
-#include "utils.h"
 
 TEST(gameoflife_test, correctness)
 {

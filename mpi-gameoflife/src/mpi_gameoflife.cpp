@@ -31,6 +31,7 @@ void mpi_gameoflife::launch(std::size_t num_generations)
     mpi::broadcast(world_, num_generations, MASTER_PROC_RANK_);
 
     bool is_changed = true;
+    auto logical_or = std::logical_or<bool>();
 
     for (std::size_t step_counter = 0;
          step_counter < num_generations && is_changed;
@@ -39,7 +40,7 @@ void mpi_gameoflife::launch(std::size_t num_generations)
         exchange_borders_();
 
         is_changed = step_();
-        is_changed = mpi::all_reduce(world_, is_changed, std::logical_or<bool>());
+        is_changed = mpi::all_reduce(world_, is_changed, logical_or);
     }
 }
 

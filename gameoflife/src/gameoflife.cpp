@@ -2,9 +2,7 @@
 #include <random>
 #include <stdexcept>
 #include <iostream>
-#include <lcms2.h>
 
-#include "utils.h"
 #include "gameoflife.h"
 
 const gameoflife::state_t gameoflife::DEAD_;
