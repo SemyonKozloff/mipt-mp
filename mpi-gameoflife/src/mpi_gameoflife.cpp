@@ -79,7 +79,6 @@ gameoflife::grid_t mpi_gameoflife::gather_grid_(const gameoflife::grid_t& local_
         for (auto&& grid : grid_chunks) {
             gathered_grid.insert(std::end(gathered_grid), std::cbegin(grid), std::cend(grid));
         }
-
         return gathered_grid;
     }
     else {

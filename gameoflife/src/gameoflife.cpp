@@ -74,6 +74,9 @@ std::size_t gameoflife::get_num_generations() const noexcept
 
 gameoflife::grid_t gameoflife::add_borders_(const gameoflife::grid_t& grid)
 {
+    if (grid.empty() || grid.front().empty()) {
+        throw std::invalid_argument("Empty generation");
+    }
     grid_t temp_grid = grid;
 
     for (auto&& row : temp_grid) {
@@ -89,7 +92,10 @@ gameoflife::grid_t gameoflife::add_borders_(const gameoflife::grid_t& grid)
 
 gameoflife::grid_t gameoflife::remove_borders_(const gameoflife::grid_t& grid)
 {
-    auto temp_grid = grid;
+    if (grid.empty() || grid.front().empty()) {
+        throw std::invalid_argument("Empty generation");
+    }
+    grid_t temp_grid = grid;
 
     temp_grid.erase(std::begin(temp_grid));
     temp_grid.pop_back();
